@@ -1,15 +1,35 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
+import ReactDOM from "react-dom";
+import { Provider } from 'react-redux';
+import Store from './store';
+import App from './components/App';
+import "./index.css"
 import reportWebVitals from './reportWebVitals';
+import { createGlobalStyle } from "styled-components";
+import $ from "jquery";
+import { PersistGate } from "redux-persist/integration/react";;
+const { persistor, store } = Store();
+
+const GlobalStyle = createGlobalStyle`
+  :root{
+    transition: all 0.5s ease-in;
+  }
+`;
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <GlobalStyle />
+      <App />
+    </PersistGate>
+  </Provider>,
+  document.getElementById("root")
 );
+
+$(document).bind("DOMNodeRemoved", function (e) {
+  console.log("Removed: " + e.target.nodeName);
+});
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
